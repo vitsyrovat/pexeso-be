@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
+# from datetime import timezone
+from django.utils import timezone
 
 class UserManager(BaseUserManager):
 
@@ -43,3 +45,24 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+
+class Figure(models.Model):
+    name=models.CharField(max_length=255)
+    user=models.ForeignKey(User, on_delete=models.CASCADE)
+    upload_date=models.DateTimeField('date uploaded', default=timezone.now())
+
+    def __str__(self):
+        return self.name
+
+
+class Collection(models.Model):
+    name = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    figures = models.ManyToManyField(Figure)
+    date_created = models.DateTimeField(default=timezone.now())
+
+    def __str__(self):
+        return self.name
+
+

@@ -1,0 +1,18 @@
+<h1>{{ collection.name }}</h1>
+
+{% if collection.figures %}
+    <ul>
+        {% for figure in collection.figures.all|dictsort:'name' %}
+            <li><a href="{% url 'figure:detail' figure.pk %}">{{ figure.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No figures in this collection.</p>
+{% endif %}
+
+<h3>figures not included in {{ collection.name }}</h3>
+<ul>
+    {% for figure in not_in_collection_figure_list %}
+        <li><a href="{% url 'figure:detail' figure.pk %}">{{ figure.name }}</a></li>
+    {% endfor %}
+</ul>

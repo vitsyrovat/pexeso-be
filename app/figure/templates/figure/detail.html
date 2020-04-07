@@ -1,0 +1,10 @@
+<h1> {{ figure.name }}</h1>
+
+<p>Uploaded by {{ figure.user }} at {{ figure.upload_date }}</p>
+
+<p>listed in collections</p>
+<ul>
+{% for collection in figure.collection_set.all %}
+    <li><a href="{% url 'collection:detail' collection.pk %}">{{ collection.name }}</a></li>
+{% endfor %}
+</ul>
