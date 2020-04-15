@@ -1,5 +1,4 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 # from django.http import HttpResponseRedirect
 from django.views import generic, View
 
@@ -11,12 +10,12 @@ class CollectionListView(generic.ListView):
     template_name = 'collection/collection_list.html'
     # context_object_name = 'collection_list'  # neni treba, nechci-li zmenit
 
-    queryset = Collection.objects.all().order_by('name')
+    # queryset = Collection.objects.all().order_by('name')
 
     # neni potreba, pokud nechci upravit:
-    # def get_queryset(self):
-    #     """Return all published collections"""
-    #     return Collection.objects.all()
+    def get_queryset(self):
+        """Return all published collections"""
+        return Collection.objects.all().order_by('name')
 
 
 class CollectionDetailView(generic.DetailView):
@@ -26,27 +25,30 @@ class CollectionDetailView(generic.DetailView):
     # this adds also all figures to the context:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        # context['figure_list'] = Figure.objects.all()  # nepouzito
-        
-        # this adds also figures not included in the collection
         pk = self.kwargs['pk']
-        context['not_in_collection_figure_list'] = \
-            Figure.objects.exclude(collection=pk).\
-                order_by('name')
-        
+
+        # this filters collection's figure into figure_list
+        context['figure_list'] = Figure.objects.filter(
+            collections=pk
+        ).order_by('name')
+
+        # this adds also figures not included in the collection
+        context['not_in_collection_figure_list'] = Figure.objects.exclude(
+            collections=pk
+            ).order_by('name')
+
         return context
 
 
-class GreetingView(View):
-    greeting = "Hello, budy."
+# class GreetingView(View):
+#     greeting = "Hello, budy."
 
-    def get(self, request):
-        return HttpResponse(self.greeting)
+#     def get(self, request):
+#         return HttpResponse(self.greeting)
 
 
-class MorningView(GreetingView):
-    greeting = "Mornin', man."
+# class MorningView(GreetingView):
+#     greeting = "Mornin', man."
 
 
 # --

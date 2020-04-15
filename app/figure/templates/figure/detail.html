@@ -2,9 +2,9 @@
 
 <p>Uploaded by {{ figure.user }} at {{ figure.upload_date }}</p>
 
-<p>listed in collections</p>
+<p>Listed in collection(s):</p>
 <ul>
-{% for collection in figure.collection_set.all %}
+{% for collection in figure.collections.all %}
     <li><a href="{% url 'collection:detail' collection.pk %}">{{ collection.name }}</a></li>
 {% endfor %}
 </ul>
